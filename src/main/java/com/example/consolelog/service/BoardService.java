@@ -34,7 +34,7 @@ public class BoardService {
 
         boardRepository.save(board);
 
-        return ResponseDto.success(new BoardResponseDto(board, time.toString()));
+        return ResponseDto.success(new BoardResponseDto(board, time));
     }
 
     // 게시물 전체 조회
@@ -44,7 +44,7 @@ public class BoardService {
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
         for (Board board : boardList) {
-            boardResponseDtoList.add(new BoardResponseDto(board, time.toString()));
+            boardResponseDtoList.add(new BoardResponseDto(board, time));
         }
 
         return ResponseDto.success(boardResponseDtoList);
@@ -56,7 +56,7 @@ public class BoardService {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
-        return ResponseDto.success(new BoardResponseDto(board, time.toString()));
+        return ResponseDto.success(new BoardResponseDto(board, time));
 
     }
 
@@ -70,7 +70,7 @@ public class BoardService {
 
         board.update(boardRequestDto);
 
-        return ResponseDto.success(new BoardResponseDto(board, time.toString()));
+        return ResponseDto.success(new BoardResponseDto(board, time));
     }
 
     // 게시글 삭제
