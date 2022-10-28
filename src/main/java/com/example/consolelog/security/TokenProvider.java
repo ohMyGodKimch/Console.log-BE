@@ -35,6 +35,7 @@ public class TokenProvider {
 
     @Autowired
     public TokenProvider(@Value("${jwt.secret.key}") String secretKey, MemberRepository memberRepository) {
+
         this.memberRepository = memberRepository;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -50,6 +51,7 @@ public class TokenProvider {
 
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())       // payload "sub": "name"
                 .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
@@ -83,12 +85,15 @@ public class TokenProvider {
         String username = claims.getSubject();
         Member member = memberRepository.findByName( username )
                 .orElseThrow(() -> new UsernameNotFoundException("Can't find " + username ));;
+
         MemberDetailsImpl memberDetails = new MemberDetailsImpl(member);
+
         return new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
 
     }
 
     public boolean validateToken(String token) {
+
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -105,6 +110,7 @@ public class TokenProvider {
     }
 
     private Claims parseClaims(String accessToken) {
+
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
