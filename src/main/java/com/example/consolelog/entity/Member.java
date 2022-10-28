@@ -1,5 +1,6 @@
 package com.example.consolelog.entity;
 
+import com.example.consolelog.dto.requestDto.MemberReqeustDto;
 import com.example.consolelog.util.TimeStamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,16 +31,22 @@ public class Member extends TimeStamped {
     private String nickname;
 
     @Column(nullable = false)
-    private String image;
+    private String image = "defalut";
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private Authority authority = Authority.ROLE_USER;
 
     @OneToMany(mappedBy = "member")
     private List<Board> boardList;
 
     @OneToMany(mappedBy = "member")
     private List<Comment> commentList;
+
+    public Member(MemberReqeustDto memberReqeustDto, String password) {
+        this.name = memberReqeustDto.getName();
+        this.password = password;
+        this.nickname = memberReqeustDto.getNickname();
+    }
 
 }

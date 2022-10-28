@@ -16,6 +16,9 @@ public class MemberReqeustDto {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$")
     private String password;
 
+    @NotBlank
+    private String nickname;
+
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(name, password);
     }
