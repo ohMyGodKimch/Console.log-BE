@@ -1,5 +1,6 @@
 package com.example.consolelog.entity;
 
+import com.example.consolelog.dto.requestDto.BoardRequestDto;
 import com.example.consolelog.util.TimeStamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,4 +38,17 @@ public class Board extends TimeStamped {
 
     @OneToMany(mappedBy = "board")
     private List<Heart> heartList;
+
+
+    public Board(BoardRequestDto boardRequestDto, Member member) {
+        this.title = boardRequestDto.getTitle();
+        this.content = boardRequestDto.getContent();
+        this.member = member;
+    }
+
+
+    public void update(BoardRequestDto boardRequestDto){
+        this.title = boardRequestDto.getTitle();
+        this.content = boardRequestDto.getContent();
+    }
 }
