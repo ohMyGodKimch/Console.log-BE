@@ -19,7 +19,7 @@ public class Time {
         long curTime = Timestamp.valueOf(currentLocalDateTime).getTime();
         long regTime = Timestamp.valueOf(board.getCreatedAt()).getTime();
         long diffTime = Math.abs((curTime - regTime) / 1000);
-        String msg = "김지애 바보";
+        String msg = null;
         if (diffTime < TIME_MAXIMUM.SEC) {
 // sec
             msg = diffTime + "초 전";
