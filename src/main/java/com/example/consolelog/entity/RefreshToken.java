@@ -10,6 +10,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 public class RefreshToken {
 
@@ -30,5 +31,6 @@ public class RefreshToken {
         this.value = token;
         return this;
     }
+
 
 }
