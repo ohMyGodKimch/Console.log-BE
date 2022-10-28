@@ -1,6 +1,7 @@
 package com.example.consolelog.dto.responseDto;
 
 import com.example.consolelog.entity.Board;
+import com.example.consolelog.entity.Time;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,18 +27,22 @@ public class BoardResponseDto {
 
     private String writer;
 
-    private int commentCount;
+    private int commentCount = 0;
 
-    private int heartCount;
+    private int heartCount = 0;
 
-    public BoardResponseDto(Board board, String dayBefore){
+    public BoardResponseDto(Board board, Time time){
         this.boardId = board.getId();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.dayBefore = dayBefore;
+        this.dayBefore = time.calculateTime(board);
         this.writer = board.getMember().getNickname();
-        this.commentCount = board.getCommentList().size();
-        this.heartCount = board.getHeartList().size();
+        if (board.getCommentList() != null || board.getHeartList() != null){
+            this.commentCount = board.getCommentList().size();
+            this.heartCount = board.getHeartList().size();
+        }
+
+
     }
 
 }
