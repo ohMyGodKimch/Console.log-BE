@@ -169,5 +169,12 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# application.properties
+src/main/resources/application.properties
+
+# DB file
+consolelogdb.lock.db
+consolelogdb.mv.db
+
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij,java
