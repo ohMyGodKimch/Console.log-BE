@@ -10,6 +10,7 @@ import com.example.consolelog.entity.Member;
 import com.example.consolelog.entity.Time;
 import com.example.consolelog.repository.BoardRepository;
 import com.example.consolelog.repository.CommentRepository;
+import com.example.consolelog.repository.HeartRepository;
 import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -27,28 +28,27 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-    private final Time time;
+//    private final Time time;
 
 
-    public ResponseDto<?> createBoard(BoardRequestDto boardRequestDto, MemberDetailsImpl memberDetails) {
+    public ResponseDto<?> createBoard(BoardRequestDto boardRequestDto, Member member) {
         // 로그인한 멤버가 누구인지 확인
-        Member member = memberRepository.findByName(memberDetails.getUsername()).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
         Board board = new Board(boardRequestDto, member);
 
         boardRepository.save(board);
 
-        return ResponseDto.success(new BoardResponseDto(board, time));
+        return ResponseDto.success(new BoardResponseDto(board));
     }
 
     // 게시물 전체 조회
     public ResponseDto<?> getBoardList() {
 
-        List<Board> boardList = boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<Board> boardList = boardRepository.findAllByOrderByCreatedAtDesc();
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
         for (Board board : boardList) {
-            boardResponseDtoList.add(new BoardResponseDto(board, time));
+            boardResponseDtoList.add(new BoardResponseDto(board));
         }
 
         return ResponseDto.success(boardResponseDtoList);
@@ -72,8 +72,17 @@ public class BoardService {
                     .build()
             );
         }
+        return ResponseDto.success(BoardResponseDto.builder()
+                .boardId(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .writer(board.getMember().getNickname())
+                .heartCount(board.getHeartList().size())
+                .commentList(commentResponseDtoList)
+                .dayBefore(Time.calculateTime(board))
+                .build());
 
-        return ResponseDto.success(new BoardResponseDto(board, time, commentResponseDtoList));
+//        return ResponseDto.success(new BoardResponseDto(board, commentResponseDtoList));
 
 //        return ResponseDto.success(BoardResponseDto.builder()
 //                .boardId(board.getId())
@@ -90,27 +99,33 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public ResponseDto<?> updateBoard(Long boardId, BoardRequestDto boardRequestDto, MemberDetailsImpl memberDetails) {
-
-        memberRepository.findByName(memberDetails.getUsername()).orElseThrow(() -> new NullPointerException("해당 사용자의 정보가 없습니다."));
+    public ResponseDto<?> updateBoard(Long boardId, BoardRequestDto boardRequestDto,Member member) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
+        if (validateMember(member, board))
+            throw new IllegalArgumentException("게시물 작성자와 현재 사용자가 일치하지 않습니다.");
+
         board.update(boardRequestDto);
 
-        return ResponseDto.success(new BoardResponseDto(board, time));
+        return ResponseDto.success(new BoardResponseDto(board));
     }
 
     // 게시글 삭제
     @Transactional
-    public ResponseDto<?> deleteBoard(Long boardId, MemberDetailsImpl memberDetails) {
-
-        memberRepository.findByName(memberDetails.getUsername()).orElseThrow(() -> new NullPointerException("해당 사용자의 정보가 없습니다."));
+    public ResponseDto<?> deleteBoard(Long boardId, Member member) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+
+        if (validateMember(member, board))
+            throw new IllegalArgumentException("게시물 작성자와 현재 사용자가 일치하지 않습니다.");
 
         boardRepository.delete(board);
 
         return ResponseDto.success("게시글 삭제 완료");
+    }
+
+    public boolean validateMember(Member member, Board board) {
+        return member.getName().equals(board.getMember().getName());
     }
 }

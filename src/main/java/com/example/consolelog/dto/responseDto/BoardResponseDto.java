@@ -36,11 +36,11 @@ public class BoardResponseDto {
     private int heartCount = 0;
 
     // 게시물 목록 보기 & 게시물 등록 & 게시물 수정 사용
-    public BoardResponseDto(Board board, Time time){
+    public BoardResponseDto(Board board){
         this.boardId = board.getId();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.dayBefore = time.calculateTime(board);
+        this.dayBefore = Time.calculateTime(board);
         this.writer = board.getMember().getNickname();
         if (board.getCommentList() != null || board.getHeartList() != null){
             this.commentCount = board.getCommentList().size();

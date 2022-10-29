@@ -15,45 +15,33 @@ import org.springframework.stereotype.Service;
 public class HeartService {
 
     private final HeartRepository heartRepository;
-
-    private final MemberRepository memberRepository;
-
     private final BoardRepository boardRepository;
 
     // 하트 생성 ♡!!
-    public ResponseDto<?> addHeart(Long board_id, MemberDetailsImpl memberDetails) {
+    public ResponseDto<?> addHeart(Long boardId, Member member) {
 
-        Member member = memberRepository.findByName(memberDetails.getUsername()).orElseThrow(()
-                -> new NullPointerException("해당 사용자의 정보가 없습니다."));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
-        Board board = boardRepository.findById(board_id).orElseThrow(()
-                -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+        if (heartRepository.existsByBoardAndMember(board, member))
+            throw new IllegalArgumentException("이미 좋아요를 누른 사용자입니다.");
 
-        if ( ! heartRepository.existsByBoardAndMember(board, member)) {
-
-            Heart heart = new Heart(board, member);
-            heartRepository.save(heart);
-        }
+        Heart heart = new Heart(board, member);
+        heartRepository.save(heart);
 
         return ResponseDto.success("좋아요를 눌렀습니다");
-
     }
 
 
     // 하트 취소 ♡ !!
-    public ResponseDto<?> cancelHeart(Long board_id, MemberDetailsImpl memberDetails) {
+    public ResponseDto<?> cancelHeart(Long board_id, Member member) {
 
-        Member member = memberRepository.findByName(memberDetails.getUsername()).orElseThrow(()
-                -> new NullPointerException("해당 사용자의 정보가 없습니다."));
+        Board board = boardRepository.findById(board_id).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
-        Board board = boardRepository.findById(board_id).orElseThrow(()
-                -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
+        if (!heartRepository.existsByBoardAndMember(board, member))
+            throw new IllegalArgumentException("좋아요를 누른적 없는 사용자입니다.");
 
-        if (  heartRepository.existsByBoardAndMember(board, member)) {
-
-            Heart heart = heartRepository.findByBoard(board);
-            heartRepository.delete(heart);
-        }
+        Heart heart = heartRepository.findByBoard(board);
+        heartRepository.delete(heart);
 
         return ResponseDto.success("좋아요를 취소했습니다");
     }

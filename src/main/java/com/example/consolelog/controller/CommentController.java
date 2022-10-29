@@ -16,20 +16,23 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping(value = "/{board_id}/comments")
-    public ResponseDto<?> createComment(@PathVariable Long board_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return commentService.createComment(board_id, commentRequestDto, memberDetails);
+    public ResponseDto<?> createComment(@PathVariable(name = "board_id") Long boardId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+
+        return commentService.createComment(boardId, commentRequestDto, memberDetails.getMember());
     }
 
     // 댓글 수정
     @PutMapping(value = "/comments/{comment_id}")
-    public ResponseDto<?> updateComment(@PathVariable Long comment_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return commentService.updateComment(comment_id, commentRequestDto, memberDetails);
+    public ResponseDto<?> updateComment(@PathVariable(name = "comment_id") Long commentId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+
+        return commentService.updateComment(commentId, commentRequestDto, memberDetails.getMember());
     }
 
     // 댓글 삭제
     @DeleteMapping(value = "/comments/{comment_id}")
-    public ResponseDto<?> deleteComment(@PathVariable Long comment_id, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return commentService.deleteComment(comment_id, memberDetails);
+    public ResponseDto<?> deleteComment(@PathVariable(name = "comment_id") Long commentId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+
+        return commentService.deleteComment(commentId, memberDetails.getMember());
     }
 
 }
