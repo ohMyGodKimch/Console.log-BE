@@ -26,4 +26,8 @@ public class Heart {
     @JoinColumn (name = "BOARD_ID", nullable = false)
     private Board board;
 
+    public Heart(Board board, Member member) {
+        this.board = board;
+        this.member = member;
+    }
 }
