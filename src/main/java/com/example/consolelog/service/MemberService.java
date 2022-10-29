@@ -3,6 +3,7 @@ package com.example.consolelog.service;
 
 import com.example.consolelog.dto.TokenDto;
 import com.example.consolelog.dto.requestDto.MemberReqeustDto;
+import com.example.consolelog.dto.requestDto.TokenRequestDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.entity.RefreshToken;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refeshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public ResponseDto<?> signup(MemberReqeustDto memberReqeustDto) {
 
@@ -54,7 +56,7 @@ public class MemberService {
                 .value(tokenDto.getRefreshToken())
                 .build();
 
-        refeshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken);
 
         response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtFilter.BEARER_PREFIX + tokenDto.getAccessToken());
         response.setHeader("Refresh-Token", tokenDto.getRefreshToken());
@@ -76,5 +78,27 @@ public class MemberService {
             return ResponseDto.success(false); // 예외처리 예정
 
         return ResponseDto.success(true);
+    }
+
+    @Transactional
+    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
+
+        if(!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+            throw new RuntimeException("Refresh 토큰이 유효하지 않습니다.");
+        }
+        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+
+        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("로그아웃된 사용자입니다."));
+        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+        }
+
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+
+        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+        refreshTokenRepository.save(newRefreshToken);
+
+        return tokenDto;
     }
 }
