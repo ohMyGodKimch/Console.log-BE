@@ -5,7 +5,6 @@ import com.example.consolelog.dto.responseDto.CommentResponseDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.entity.Board;
 import com.example.consolelog.entity.Comment;
-import com.example.consolelog.entity.Member;
 import com.example.consolelog.repository.BoardRepository;
 import com.example.consolelog.repository.CommentRepository;
 import com.example.consolelog.repository.MemberRepository;
@@ -67,5 +66,4 @@ public class CommentService {
 
         return ResponseDto.success("댓글 삭제 완료");
     }
-
 }

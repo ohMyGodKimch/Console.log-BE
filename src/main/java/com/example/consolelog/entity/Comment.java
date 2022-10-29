@@ -1,5 +1,6 @@
 package com.example.consolelog.entity;
 
+import com.example.consolelog.dto.requestDto.CommentRequestDto;
 import com.example.consolelog.util.TimeStamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,4 +30,15 @@ public class Comment extends TimeStamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     private Board board;
+
+    public Comment(CommentRequestDto commentRequestDto, Member member, Board board) {
+        this.content = commentRequestDto.getContent();
+        this.member = member;
+        this.board = board;
+    }
+
+
+    public void update(CommentRequestDto commentRequestDto) {
+        this.content = commentRequestDto.getContent();
+    }
 }

@@ -31,4 +31,5 @@ public class CommentController {
     public ResponseDto<?> deleteComment(@PathVariable Long comment_id, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
         return commentService.deleteComment(comment_id, memberDetails);
     }
+
 }
