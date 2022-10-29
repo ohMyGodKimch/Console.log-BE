@@ -2,11 +2,14 @@ package com.example.consolelog.service;
 
 import com.example.consolelog.dto.requestDto.BoardRequestDto;
 import com.example.consolelog.dto.responseDto.BoardResponseDto;
+import com.example.consolelog.dto.responseDto.CommentResponseDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.entity.Board;
+import com.example.consolelog.entity.Comment;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.entity.Time;
 import com.example.consolelog.repository.BoardRepository;
+import com.example.consolelog.repository.CommentRepository;
 import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -23,6 +26,7 @@ public class BoardService {
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
     private final Time time;
 
 
@@ -56,7 +60,31 @@ public class BoardService {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
-        return ResponseDto.success(new BoardResponseDto(board, time));
+        List<Comment> commentList = commentRepository.findAllByBoardOrderByCreatedAtDesc(board);
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(CommentResponseDto.builder()
+                    .commentId(comment.getId())
+                    .comment(comment.getContent())
+                    .nickname(comment.getMember().getNickname())
+                    .dayBefore(Time.calculateTime(comment))
+                    .build()
+            );
+        }
+
+        return ResponseDto.success(new BoardResponseDto(board, time, commentResponseDtoList));
+
+//        return ResponseDto.success(BoardResponseDto.builder()
+//                .boardId(board.getId())
+//                .title(board.getTitle())
+//                .content(board.getContent())
+//                .writer(board.getMember().getNickname())
+//                .commentList(commentResponseDtoList)
+//                .commentCount(board.getCommentList().size())
+//                .heartCount(board.getHeartList().size())
+//                .build()
+//        );
 
     }
 
