@@ -33,7 +33,7 @@ public class Board extends TimeStamped {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Comment> commentList;
 
     @OneToMany(mappedBy = "board")

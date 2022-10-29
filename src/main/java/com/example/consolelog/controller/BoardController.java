@@ -28,20 +28,25 @@ public class BoardController {
 
     // 게시물 상세 조회
     @GetMapping(value = "/{board_id}")
-    public ResponseDto<?> getBoard(@PathVariable Long board_id){
-        return boardService.getBoard(board_id);
+
+    public ResponseDto<?> getBoard(@PathVariable(name = "board_id") Long boardId){
+        return boardService.getBoard(boardId);
+
     }
 
     // 게시물 수정
     @PutMapping(value = "/{board_id}")
-    public ResponseDto<?> updateBoard(@PathVariable Long board_id, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return boardService.updateBoard(board_id, boardRequestDto, memberDetails);
+    public ResponseDto<?> updateBoard(@PathVariable(name = "board_id") Long boardId, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+        return boardService.updateBoard(boardId, boardRequestDto, memberDetails);
+
     }
 
     // 게시글 삭제
     @DeleteMapping(value = "/{board_id}")
-    public ResponseDto<?> deleteBoard(@PathVariable Long board_id, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return boardService.deleteBoard(board_id, memberDetails);
+
+    public ResponseDto<?> deleteBoard(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+        return boardService.deleteBoard(boardId, memberDetails);
+
     }
 
 
