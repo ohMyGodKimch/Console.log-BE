@@ -15,13 +15,15 @@ public class HeartController {
     private final HeartService heartService;
 
     @PostMapping("/{board_id}")
-    public ResponseDto<?> addHeart(@PathVariable Long board_id, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return heartService.addHeart(board_id, memberDetails);
+    public ResponseDto<?> addHeart(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+
+        return heartService.addHeart(boardId, memberDetails.getMember());
     }
 
     @DeleteMapping("/{board_id}")
-    public ResponseDto<?> cancelHeart(@PathVariable Long board_id, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return heartService.cancelHeart(board_id, memberDetails);
+    public ResponseDto<?> cancelHeart(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+
+        return heartService.cancelHeart(boardId, memberDetails.getMember());
     }
 
 }

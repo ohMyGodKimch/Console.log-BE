@@ -58,8 +58,8 @@ public class MemberService {
 
         response.setHeader(JwtFilter.AUTHORIZATION_HEADER, JwtFilter.BEARER_PREFIX + tokenDto.getAccessToken());
         response.setHeader("Refresh-Token", tokenDto.getRefreshToken());
-
         return ResponseDto.success("로그인에 성공했습니다.");
+
     }
 
     public ResponseDto<?> checkName(String name) {

@@ -15,39 +15,36 @@ public class BoardController {
     private final BoardService boardService;
 
     // 게시물 생성
-    @PostMapping(value = "")
+    @PostMapping
     public ResponseDto<?> createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return boardService.createBoard(boardRequestDto,memberDetails);
+
+        return boardService.createBoard(boardRequestDto, memberDetails.getMember());
     }
 
     // 게시물 전체 조회
-    @GetMapping(value = "")
+    @GetMapping
     public ResponseDto<?> getBoardList(){
         return boardService.getBoardList();
     }
 
     // 게시물 상세 조회
     @GetMapping(value = "/{board_id}")
-
     public ResponseDto<?> getBoard(@PathVariable(name = "board_id") Long boardId){
-        return boardService.getBoard(boardId);
 
+        return boardService.getBoard(boardId);
     }
 
     // 게시물 수정
     @PutMapping(value = "/{board_id}")
     public ResponseDto<?> updateBoard(@PathVariable(name = "board_id") Long boardId, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return boardService.updateBoard(boardId, boardRequestDto, memberDetails);
 
+        return boardService.updateBoard(boardId, boardRequestDto, memberDetails.getMember());
     }
 
     // 게시글 삭제
     @DeleteMapping(value = "/{board_id}")
-
     public ResponseDto<?> deleteBoard(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
-        return boardService.deleteBoard(boardId, memberDetails);
 
+        return boardService.deleteBoard(boardId, memberDetails.getMember());
     }
-
-
 }
