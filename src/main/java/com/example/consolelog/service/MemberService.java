@@ -49,6 +49,7 @@ public class MemberService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         Member member = memberRepository.findByName(authentication.getName()).orElseThrow(() -> new NullPointerException("해당 사용자를 찾을 수 없습니다."));
 
+
         if(!passwordEncoder.matches(memberRequestDto.getPassword(), member.getPassword()))
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다."); // 커스텀 예외 처리 예정
 

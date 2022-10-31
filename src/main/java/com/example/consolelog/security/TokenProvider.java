@@ -52,8 +52,11 @@ public class TokenProvider {
         // Access Token 생성
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
 
+        Member member = memberRepository.findByName(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("Can't find " + authentication.getName() ));;
+
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())       // payload "sub": "name"
+                .setAudience(member.getNickname())          // payload "aud": "nickname"
                 .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        // payload "exp": 1516239022 (예시)
                 .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
