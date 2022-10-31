@@ -126,6 +126,6 @@ public class BoardService {
     }
 
     public boolean validateMember(Member member, Board board) {
-        return member.getName().equals(board.getMember().getName());
+        return !member.getName().equals(board.getMember().getName());
     }
 }

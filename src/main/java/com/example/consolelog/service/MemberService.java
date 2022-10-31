@@ -33,6 +33,9 @@ public class MemberService {
 
     public ResponseDto<?> signup(MemberReqeustDto memberReqeustDto) {
 
+        if (memberRepository.existsByName(memberReqeustDto.getName()) && memberRepository.existsByNickname(memberReqeustDto.getNickname()))
+            throw new RuntimeException("이미 존재하는 Name 또는 Nickname 입니다.");
+
         Member member = new Member(memberReqeustDto, passwordEncoder.encode(memberReqeustDto.getPassword()));
 
         memberRepository.save(member);
@@ -66,8 +69,10 @@ public class MemberService {
 
     public ResponseDto<?> checkName(String name) {
 
-        if (memberRepository.existsByName(name))
-            return ResponseDto.success(false); // 예외처리 예정
+        if (memberRepository.existsByName(name)) {
+            throw new RuntimeException("중복된 아이디 입니다.");
+        }
+
 
         return ResponseDto.success(true);
     }
@@ -75,7 +80,7 @@ public class MemberService {
     public ResponseDto<?> checkNickname(String nickname) {
 
         if (memberRepository.existsByNickname(nickname))
-            return ResponseDto.success(false); // 예외처리 예정
+            throw new RuntimeException("중복된 닉네임 입니다.");
 
         return ResponseDto.success(true);
     }

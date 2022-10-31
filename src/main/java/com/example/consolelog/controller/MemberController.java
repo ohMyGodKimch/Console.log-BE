@@ -5,16 +5,13 @@ import com.example.consolelog.dto.requestDto.MemberReqeustDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
@@ -31,14 +28,14 @@ public class MemberController {
         return memberService.login(memberReqeustDto, response);
     }
 
-    @PostMapping("/check-name")
-    public ResponseDto<?> checkName(String name) {
+    @GetMapping("/check-name")
+    public ResponseDto<?> checkName(@RequestParam String name) {
 
         return memberService.checkName(name);
     }
 
-    @PostMapping("/check-nickname")
-    public ResponseDto<?> checkNickname(String nickname) {
+    @GetMapping("/check-nickname")
+    public ResponseDto<?> checkNickname(@RequestParam String nickname) {
 
         return memberService.checkNickname(nickname);
     }
