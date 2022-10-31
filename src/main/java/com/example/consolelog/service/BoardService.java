@@ -39,7 +39,7 @@ public class BoardService {
 
         boardRepository.save(board);
 
-        return ResponseDto.success(new BoardResponseDto(board));
+        return ResponseDto.success("게시글 포스팅 완료.");
     }
 
     // 게시물 전체 조회
@@ -110,7 +110,7 @@ public class BoardService {
 
         board.update(boardRequestDto);
 
-        return ResponseDto.success(new BoardResponseDto(board));
+        return ResponseDto.success("게시글 수정 완료.");
     }
 
     // 게시글 삭제

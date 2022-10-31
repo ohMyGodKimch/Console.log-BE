@@ -8,7 +8,6 @@ import com.example.consolelog.entity.Comment;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.repository.BoardRepository;
 import com.example.consolelog.repository.CommentRepository;
-import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

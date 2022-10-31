@@ -119,13 +119,4 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
-
-    public Member getMemberFromAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || AnonymousAuthenticationToken.class.
-                isAssignableFrom(authentication.getClass())) {
-            return null;
-        }
-        return ((MemberDetailsImpl) authentication.getPrincipal()).getMember();
-    }
 }

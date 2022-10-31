@@ -73,7 +73,7 @@ public class SecurityConfig{
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/member/**").permitAll()
+                .antMatchers("/members/**").permitAll()
                 .antMatchers(HttpMethod.POST).authenticated()
                 .antMatchers(HttpMethod.DELETE).authenticated()
                 .antMatchers(HttpMethod.PUT).authenticated()

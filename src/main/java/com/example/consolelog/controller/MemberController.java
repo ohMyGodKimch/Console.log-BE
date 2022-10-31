@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;

@@ -6,7 +6,6 @@ import com.example.consolelog.entity.Heart;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.repository.BoardRepository;
 import com.example.consolelog.repository.HeartRepository;
-import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

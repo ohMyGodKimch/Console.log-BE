@@ -2,7 +2,6 @@ package com.example.consolelog.repository;
 
 import com.example.consolelog.dto.responseDto.BoardResponseDto;
 import com.example.consolelog.entity.*;
-import com.example.consolelog.security.TokenProvider;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Order;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,9 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
-    private final HeartRepository heartRepository;
-    private final TokenProvider tokenProvider;
-
 
     @Override
     public Page<BoardResponseDto> getBoardPaging(Pageable pageable) {
@@ -29,7 +25,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     @Override
     public Slice<BoardResponseDto> getBoardScroll(Pageable pageable) {
         QBoard board = QBoard.board;
-        Member member = tokenProvider.getMemberFromAuthentication();
         List<Board> boardList = queryFactory
                 .select(board)
                 .from(board)
@@ -39,9 +34,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
         for (Board eachBoard : boardList) {
-//            Optional<Heart> heart = heartRepository.findByMemberAndBoard(member, eachBoard);
-//            boolean heartByMe;
-//            heartByMe = heart.isPresent();
 
             boardResponseDtoList.add(
                     BoardResponseDto.builder()
