@@ -10,22 +10,24 @@ import com.example.consolelog.entity.Member;
 import com.example.consolelog.entity.Time;
 import com.example.consolelog.repository.BoardRepository;
 import com.example.consolelog.repository.CommentRepository;
-import com.example.consolelog.repository.HeartRepository;
-import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 //    private final Time time;
@@ -127,5 +129,35 @@ public class BoardService {
 
     public boolean validateMember(Member member, Board board) {
         return !member.getName().equals(board.getMember().getName());
+    }
+
+    // 무한 스크롤
+    public Map<String, List<BoardResponseDto>> getBoardListScroll(Integer page, Integer size, String sortBy, Boolean isAsc) {
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Slice<Board> sliceBoardList = boardRepository.findAllBy(pageable);
+
+        Map<String, List<BoardResponseDto>> listMap = new HashMap<>();
+        List<BoardResponseDto> boardList = new ArrayList<>();
+
+        for (Board board : sliceBoardList){
+            BoardResponseDto boards = BoardResponseDto.builder()
+                    .boardId(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .writer(board.getMember().getNickname())
+                    .commentCount(board.getCommentList().size())
+                    .heartCount(board.getHeartList().size())
+                    .build();
+
+            boardList.add(boards);
+        }
+
+        listMap.put("maindata", boardList);
+
+        return listMap;
     }
 }
