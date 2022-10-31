@@ -9,11 +9,12 @@ import com.example.consolelog.entity.Comment;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.entity.Time;
 import com.example.consolelog.repository.BoardRepository;
+import com.example.consolelog.repository.BoardRepositoryImpl;
 import com.example.consolelog.repository.CommentRepository;
-import com.example.consolelog.repository.HeartRepository;
 import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,7 +29,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-//    private final Time time;
+    private final BoardRepositoryImpl boardRepositoryImpl;
 
 
     public ResponseDto<?> createBoard(BoardRequestDto boardRequestDto, Member member) {
@@ -77,6 +78,7 @@ public class BoardService {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .writer(board.getMember().getNickname())
+                .commentCount(board.getCommentList().size())
                 .heartCount(board.getHeartList().size())
                 .commentList(commentResponseDtoList)
                 .dayBefore(Time.calculateTime(board))
@@ -99,7 +101,7 @@ public class BoardService {
 
     // 게시글 수정
     @Transactional
-    public ResponseDto<?> updateBoard(Long boardId, BoardRequestDto boardRequestDto,Member member) {
+    public ResponseDto<?> updateBoard(Long boardId, BoardRequestDto boardRequestDto, Member member) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("해당 게시물이 존재하지 않습니다."));
 
@@ -126,6 +128,11 @@ public class BoardService {
     }
 
     public boolean validateMember(Member member, Board board) {
-        return member.getName().equals(board.getMember().getName());
+
+        return !member.getName().equals(board.getMember().getName());
+    }
+
+    public Slice<BoardResponseDto> getBoardListInfinite(Pageable pageable) {
+        return boardRepositoryImpl.getBoardScroll(pageable);
     }
 }

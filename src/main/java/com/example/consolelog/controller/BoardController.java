@@ -5,8 +5,13 @@ import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.service.BoardService;
 import com.example.consolelog.service.MemberDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -16,35 +21,42 @@ public class BoardController {
 
     // 게시물 생성
     @PostMapping
-    public ResponseDto<?> createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+    public ResponseDto<?> createBoard(@RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
         return boardService.createBoard(boardRequestDto, memberDetails.getMember());
     }
 
     // 게시물 전체 조회
     @GetMapping
-    public ResponseDto<?> getBoardList(){
+    public ResponseDto<?> getBoardList() {
+
         return boardService.getBoardList();
     }
 
     // 게시물 상세 조회
     @GetMapping(value = "/{board_id}")
-    public ResponseDto<?> getBoard(@PathVariable(name = "board_id") Long boardId){
+    public ResponseDto<?> getBoard(@PathVariable(name = "board_id") Long boardId) {
 
         return boardService.getBoard(boardId);
     }
 
     // 게시물 수정
     @PutMapping(value = "/{board_id}")
-    public ResponseDto<?> updateBoard(@PathVariable(name = "board_id") Long boardId, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+    public ResponseDto<?> updateBoard(@PathVariable(name = "board_id") Long boardId, @RequestBody BoardRequestDto boardRequestDto, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
         return boardService.updateBoard(boardId, boardRequestDto, memberDetails.getMember());
     }
 
     // 게시글 삭제
     @DeleteMapping(value = "/{board_id}")
-    public ResponseDto<?> deleteBoard(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
+    public ResponseDto<?> deleteBoard(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
         return boardService.deleteBoard(boardId, memberDetails.getMember());
+    }
+
+    @GetMapping(value = "/infinite-scroll")
+    public ResponseEntity<Slice<?>> getBoardListInfinite(Pageable pageable) {
+
+        return new ResponseEntity<>(boardService.getBoardListInfinite(pageable), HttpStatus.OK);
     }
 }
