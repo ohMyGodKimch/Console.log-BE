@@ -3,20 +3,17 @@ package com.example.consolelog.service;
 import com.example.consolelog.dto.requestDto.BoardRequestDto;
 import com.example.consolelog.dto.responseDto.BoardResponseDto;
 import com.example.consolelog.dto.responseDto.CommentResponseDto;
+import com.example.consolelog.dto.responseDto.ImageResponseDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
-import com.example.consolelog.entity.Board;
-import com.example.consolelog.entity.Comment;
-import com.example.consolelog.entity.Member;
-import com.example.consolelog.entity.Time;
-import com.example.consolelog.repository.BoardRepository;
-import com.example.consolelog.repository.CommentRepository;
-import com.example.consolelog.repository.HeartRepository;
-import com.example.consolelog.repository.MemberRepository;
+import com.example.consolelog.entity.*;
+import com.example.consolelog.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +22,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final MemberRepository memberRepository;
+    private final ImageRepository imageRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+
+    private final S3UpaloadService s3UpaloadService;
 //    private final Time time;
 
 
@@ -123,6 +122,17 @@ public class BoardService {
         boardRepository.delete(board);
 
         return ResponseDto.success("게시글 삭제 완료");
+    }
+
+    public ResponseDto<?> uploadImage(Long boardId, MultipartFile multipartFile) throws IOException {
+
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다."));
+        Image image = new Image(board, s3UpaloadService.upload(multipartFile, "board"));
+
+        imageRepository.save(image);
+
+        ImageResponseDto imageResponseDto = new ImageResponseDto(image.getImageUrl());
+        return ResponseDto.success(imageResponseDto);
     }
 
     public boolean validateMember(Member member, Board board) {

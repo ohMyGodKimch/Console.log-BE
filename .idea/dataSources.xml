@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="H2" uuid="7ace0cb6-067a-4f46-a2cb-4c85300e4aa6">
-      <driver-ref>h2.unified</driver-ref>
+    <data-source source="LOCAL" name="zerotoone@zero-to-one-database.c3gcvh0ejhod.ap-northeast-2.rds.amazonaws.com" uuid="b4b2c26d-1053-4e35-a6c4-8f67ef236aa6">
+      <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:file:./consolelogdb;AUTO_SERVER=TRUE;</jdbc-url>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://zero-to-one-database.c3gcvh0ejhod.ap-northeast-2.rds.amazonaws.com:3306/zerotoone</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

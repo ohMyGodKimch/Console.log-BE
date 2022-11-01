@@ -1,12 +1,17 @@
 package com.example.consolelog.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.consolelog.dto.requestDto.BoardRequestDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.service.BoardService;
 import com.example.consolelog.service.MemberDetailsImpl;
+import com.example.consolelog.service.S3UpaloadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,5 +51,11 @@ public class BoardController {
     public ResponseDto<?> deleteBoard(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails){
 
         return boardService.deleteBoard(boardId, memberDetails.getMember());
+    }
+
+    @PostMapping(value = "/{board_id}/images")
+    public ResponseDto<?> uploadImage(@PathVariable(name = "board_id") Long boardId, @RequestParam("images") MultipartFile image) throws IOException {
+
+        return boardService.uploadImage(boardId, image);
     }
 }
