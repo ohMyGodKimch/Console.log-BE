@@ -40,6 +40,8 @@ public class Board extends TimeStamped {
     private List<Heart> heartList;
 
 
+
+
     public Board(BoardRequestDto boardRequestDto, Member member) {
         this.title = boardRequestDto.getTitle();
         this.content = boardRequestDto.getContent();
