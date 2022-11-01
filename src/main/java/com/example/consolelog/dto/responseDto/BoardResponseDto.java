@@ -1,13 +1,11 @@
 package com.example.consolelog.dto.responseDto;
 
 import com.example.consolelog.entity.Board;
-import com.example.consolelog.entity.Comment;
 import com.example.consolelog.entity.Time;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -49,11 +47,11 @@ public class BoardResponseDto {
     }
 
     // 상세 게시물 보기 사용
-    public BoardResponseDto(Board board, Time time, List<CommentResponseDto> commentResponseDtoList) {
+    public BoardResponseDto(Board board, List<CommentResponseDto> commentResponseDtoList) {
         this.boardId = board.getId();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.dayBefore = time.calculateTime(board);
+        this.dayBefore = Time.calculateTime(board);
         this.writer = board.getMember().getNickname();
         this.commentList = commentResponseDtoList;
         if (board.getCommentList() != null || board.getHeartList() != null){

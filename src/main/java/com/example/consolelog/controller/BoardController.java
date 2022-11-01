@@ -6,11 +6,17 @@ import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.service.BoardService;
 import com.example.consolelog.service.MemberDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +34,7 @@ public class BoardController {
     // 게시물 전체 조회
     @GetMapping
     public ResponseDto<?> getBoardList() {
+
         return boardService.getBoardList();
     }
 
@@ -73,5 +80,17 @@ public class BoardController {
     public ResponseDto<?> deleteBoard(@PathVariable(name = "board_id") Long boardId, @AuthenticationPrincipal MemberDetailsImpl memberDetails) {
 
         return boardService.deleteBoard(boardId, memberDetails.getMember());
+    }
+
+    @GetMapping(value = "/infinite-scroll")
+    public ResponseEntity<Slice<?>> getBoardListInfinite(Pageable pageable) {
+
+        return new ResponseEntity<>(boardService.getBoardListInfinite(pageable), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/heart/{options}")
+    public ResponseDto<?> getTrendingBoard(@PathVariable String options){
+
+        return boardService.getTrendingBoard(options);
     }
 }
