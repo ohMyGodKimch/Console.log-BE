@@ -29,6 +29,7 @@ public class Board extends TimeStamped {
 //@ElementCollection
 //    private List<String> images;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -36,7 +37,7 @@ public class Board extends TimeStamped {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Comment> commentList;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Heart> heartList;
 
 
