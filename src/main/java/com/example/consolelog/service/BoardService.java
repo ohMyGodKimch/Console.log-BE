@@ -3,21 +3,22 @@ package com.example.consolelog.service;
 import com.example.consolelog.dto.requestDto.BoardRequestDto;
 import com.example.consolelog.dto.responseDto.BoardResponseDto;
 import com.example.consolelog.dto.responseDto.CommentResponseDto;
+import com.example.consolelog.dto.responseDto.ImageResponseDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
-import com.example.consolelog.entity.Board;
-import com.example.consolelog.entity.Comment;
-import com.example.consolelog.entity.Member;
-import com.example.consolelog.entity.Time;
-import com.example.consolelog.repository.BoardRepository;
-import com.example.consolelog.repository.CommentRepository;
+
+import com.example.consolelog.entity.*;
+import com.example.consolelog.repository.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +31,14 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
+
+    private final ImageRepository imageRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+
+    private final S3UpaloadService s3UpaloadService;
+//    private final Time time;
+
 
 
     public ResponseDto<?> createBoard(BoardRequestDto boardRequestDto, Member member) {
@@ -160,6 +167,16 @@ public class BoardService {
         return ResponseDto.success(boardResponseDtoList);
     }
 
+    public ResponseDto<?> uploadImage(Long boardId, MultipartFile multipartFile) throws IOException {
+
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다."));
+        Image image = new Image(board, s3UpaloadService.upload(multipartFile, "board"));
+
+        imageRepository.save(image);
+
+        ImageResponseDto imageResponseDto = new ImageResponseDto(image.getImageUrl());
+        return ResponseDto.success(imageResponseDto);
+    }
 
 
     public boolean validateMember(Member member, Board board) {

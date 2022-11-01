@@ -37,6 +37,9 @@ public class Board extends TimeStamped {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Heart> heartList;
 
+    @OneToMany(mappedBy = "board")
+    private List<Image> imagesList;
+
 
     public Board(BoardRequestDto boardRequestDto, Member member) {
         this.title = boardRequestDto.getTitle();

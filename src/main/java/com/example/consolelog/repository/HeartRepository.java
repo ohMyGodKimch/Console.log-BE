@@ -10,4 +10,5 @@ public interface HeartRepository extends JpaRepository<Heart ,Long> {
     boolean existsByBoardAndMember(Board board, Member member);
 
     Heart findByBoard(Board board);
+
 }
