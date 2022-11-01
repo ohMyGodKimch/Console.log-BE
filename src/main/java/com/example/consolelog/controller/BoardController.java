@@ -1,6 +1,7 @@
 package com.example.consolelog.controller;
 
 import com.example.consolelog.dto.requestDto.BoardRequestDto;
+import com.example.consolelog.dto.responseDto.BoardResponseDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.service.BoardService;
 import com.example.consolelog.service.MemberDetailsImpl;
@@ -11,6 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -32,6 +37,29 @@ public class BoardController {
 
         return boardService.getBoardList();
     }
+
+
+    // 무한 스크롤
+    @GetMapping(value = "/infinite-scroll")
+    public Map<String, List<BoardResponseDto>> getBoardListScroll(@RequestParam(required = false) Integer page,
+                                                                  @RequestParam(required = false) Integer size,
+                                                                  @RequestParam(required = false) String sortBy,
+                                                                  @RequestParam(required = false) Boolean isAsc) {
+        if (isNotNullParam(page, size, sortBy, isAsc)) {
+            page -= 1;
+
+            return boardService.getBoardListScroll(page, size, sortBy, isAsc);
+        } else {
+            throw new RuntimeException("페이지가 없습니다.");
+        }
+
+    }
+
+    private boolean isNotNullParam(Integer page, Integer size, String sortBy, Boolean isAsc) {
+        return (page != null) && (size != null) && (sortBy != null) && (isAsc != null);
+    }
+    // 무한스크롤 끝
+
 
     // 게시물 상세 조회
     @GetMapping(value = "/{board_id}")
