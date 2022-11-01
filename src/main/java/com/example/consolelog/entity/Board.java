@@ -29,6 +29,7 @@ public class Board extends TimeStamped {
 //@ElementCollection
 //    private List<String> images;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;

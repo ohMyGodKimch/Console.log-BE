@@ -59,4 +59,10 @@ public class BoardController {
 
         return new ResponseEntity<>(boardService.getBoardListInfinite(pageable), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/heart/{options}")
+    public ResponseDto<?> getTrendingBoard(@PathVariable String options){
+
+        return boardService.getTrendingBoard(options);
+    }
 }
