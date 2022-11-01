@@ -26,9 +26,6 @@ public class Board extends TimeStamped {
 
     @Column(nullable = false)
     private String content;
-//@ElementCollection
-//    private List<String> images;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
