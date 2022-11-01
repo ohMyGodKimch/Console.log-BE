@@ -56,6 +56,7 @@ public class BoardController {
     }
 
     private boolean isNotNullParam(Integer page, Integer size, String sortBy, Boolean isAsc) {
+
         return (page != null) && (size != null) && (sortBy != null) && (isAsc != null);
     }
     // 무한스크롤 끝
@@ -82,11 +83,6 @@ public class BoardController {
         return boardService.deleteBoard(boardId, memberDetails.getMember());
     }
 
-    @GetMapping(value = "/infinite-scroll")
-    public ResponseEntity<Slice<?>> getBoardListInfinite(Pageable pageable) {
-
-        return new ResponseEntity<>(boardService.getBoardListInfinite(pageable), HttpStatus.OK);
-    }
 
     @GetMapping(value = "/heart/{options}")
     public ResponseDto<?> getTrendingBoard(@PathVariable String options){

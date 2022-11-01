@@ -9,15 +9,12 @@ import com.example.consolelog.entity.Comment;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.entity.Time;
 import com.example.consolelog.repository.BoardRepository;
-import com.example.consolelog.repository.BoardRepositoryImpl;
 import com.example.consolelog.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-import com.example.consolelog.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,10 +30,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
-
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-    private final BoardRepositoryImpl boardRepositoryImpl;
 
 
     public ResponseDto<?> createBoard(BoardRequestDto boardRequestDto, Member member) {
@@ -46,7 +41,7 @@ public class BoardService {
 
         boardRepository.save(board);
 
-        return ResponseDto.success(new BoardResponseDto(board));
+        return ResponseDto.success("게시물 업로드가 완료되었습니다.");
     }
 
     // 게시물 전체 조회
@@ -91,19 +86,6 @@ public class BoardService {
                 .dayBefore(Time.calculateTime(board))
                 .build());
 
-//        return ResponseDto.success(new BoardResponseDto(board, commentResponseDtoList));
-
-//        return ResponseDto.success(BoardResponseDto.builder()
-//                .boardId(board.getId())
-//                .title(board.getTitle())
-//                .content(board.getContent())
-//                .writer(board.getMember().getNickname())
-//                .commentList(commentResponseDtoList)
-//                .commentCount(board.getCommentList().size())
-//                .heartCount(board.getHeartList().size())
-//                .build()
-//        );
-
     }
 
     // 게시글 수정
@@ -117,7 +99,7 @@ public class BoardService {
 
         board.update(boardRequestDto);
 
-        return ResponseDto.success(new BoardResponseDto(board));
+        return ResponseDto.success("게시물 수정이 완료되었습니다.");
     }
 
     // 게시글 삭제
@@ -131,7 +113,7 @@ public class BoardService {
 
         boardRepository.delete(board);
 
-        return ResponseDto.success("게시글 삭제 완료");
+        return ResponseDto.success("게시물 삭제가 완료되었습니다.");
     }
 
     // 게시물 트렌딩정렬 ( 생성날짜 & 하트 개수 기준 정렬하기)
