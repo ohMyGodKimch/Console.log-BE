@@ -43,8 +43,6 @@ public class BoardService {
 
         Board board = boardRepository.save(new Board(member));
 
-        System.out.println(board.getId());
-
         return ResponseDto.success(BoardResponseDto.builder()
                 .boardId(board.getId())
                 .build());
@@ -89,7 +87,9 @@ public class BoardService {
 
         for (Board board : boardList) {
 
-            boardResponseDtoList.add(new BoardResponseDto(board, imageRepository.findTop1ByBoardOrderByCreatedAtAsc(board)));
+            if (board.getState()){
+                boardResponseDtoList.add(new BoardResponseDto(board, imageRepository.findTop1ByBoardOrderByCreatedAtAsc(board)));
+            }
         }
 
         return ResponseDto.success(boardResponseDtoList);
@@ -229,16 +229,12 @@ public class BoardService {
         List<BoardResponseDto> boardList = new ArrayList<>();
 
         for (Board board : sliceBoardList) {
-            BoardResponseDto boards = BoardResponseDto.builder()
-                    .boardId(board.getId())
-                    .title(board.getTitle())
-                    .content(board.getContent())
-                    .writer(board.getMember().getNickname())
-                    .commentCount(board.getCommentList().size())
-                    .heartCount(board.getHeartList().size())
-                    .build();
 
-            boardList.add(boards);
+            BoardResponseDto boards = new BoardResponseDto(board,imageRepository.findTop1ByBoardOrderByCreatedAtAsc(board));
+
+            if (board.getState()){
+                boardList.add(boards);
+            }
         }
 
         listMap.put("boardSlice", boardList);

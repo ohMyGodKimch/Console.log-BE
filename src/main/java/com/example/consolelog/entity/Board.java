@@ -27,6 +27,9 @@ public class Board extends TimeStamped {
     @Column(columnDefinition = "LONGTEXT")
     private String content;
 
+    @Column(nullable = false)
+    private Boolean state;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -37,25 +40,22 @@ public class Board extends TimeStamped {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Heart> heartList;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Image> imagesList;
 
 
-    public Board(BoardRequestDto boardRequestDto, Member member) {
-        this.title = boardRequestDto.getTitle();
-        this.content = boardRequestDto.getContent();
-        this.member = member;
-    }
-
+    // 게시물 작성 시 사용.
     public Board(Member member){
         this.title = null;
         this.content = null;
         this.member = member;
+        this.state = false;
     }
 
-
+    // 게시물 업로드, 수정 시 사용
     public void update(BoardRequestDto boardRequestDto){
         this.title = boardRequestDto.getTitle();
         this.content = boardRequestDto.getContent();
+        this.state = true;
     }
 }
