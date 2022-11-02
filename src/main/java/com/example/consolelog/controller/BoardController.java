@@ -108,13 +108,12 @@ public class BoardController {
     public ResponseDto<?> uploadImage(@PathVariable(name = "board_id") Long boardId, @RequestParam("images") MultipartFile image) throws IOException {
 
         return boardService.uploadImage(boardId, image);
-
     }
 
 
     // 트렌딩 정렬
     @GetMapping(value = "/heart/{options}")
-    public ResponseDto<?> getTrendingBoard(@PathVariable String options){
+    public ResponseDto<?> getTrendingBoard(@PathVariable String options) {
 
         return boardService.getTrendingBoard(options);
 

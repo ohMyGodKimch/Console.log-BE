@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="zerotoone@zero-to-one-database.c3gcvh0ejhod.ap-northeast-2.rds.amazonaws.com" uuid="b4b2c26d-1053-4e35-a6c4-8f67ef236aa6">
+    <data-source source="LOCAL" name="i3e2" uuid="412cca1d-bdb9-496b-a25c-2a9f8636f8e4">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://zero-to-one-database.c3gcvh0ejhod.ap-northeast-2.rds.amazonaws.com:3306/zerotoone</jdbc-url>
+      <jdbc-url>jdbc:mysql://i3e2.cnmpjua6zjeb.ap-northeast-2.rds.amazonaws.com:3306/i3e2_test_database</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

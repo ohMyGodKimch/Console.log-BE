@@ -12,10 +12,12 @@ public class ResponseDto<T> {
     private Error error;
 
     public static <T> ResponseDto<T> success(T data) {
+
         return new ResponseDto<>( data, null);
     }
 
     public static <T> ResponseDto<T> fail(String code, String message){
+
         return new ResponseDto<>(null, new Error(code, message));
     }
 }

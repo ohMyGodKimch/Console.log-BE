@@ -23,11 +23,13 @@ public class RefreshToken {
 
     @Builder
     public RefreshToken(String key, String value) {
+
         this.key = key;
         this.value = value;
     }
 
     public RefreshToken updateValue(String token) {
+
         this.value = token;
         return this;
     }

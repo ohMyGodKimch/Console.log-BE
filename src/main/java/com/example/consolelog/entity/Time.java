@@ -15,10 +15,12 @@ public class Time {
         public static final int MONTH = 12;
     }
     public static String calculateTime(Board board) {
+
         long curTime = System.currentTimeMillis();
         long regTime = Timestamp.valueOf(board.getCreatedAt()).getTime();
         long diffTime = Math.abs((curTime - regTime) / 1000);
         String msg = null;
+
         if (diffTime < TIME_MAXIMUM.SEC) {
 // sec
             msg = diffTime + "초 전";
@@ -42,10 +44,12 @@ public class Time {
 
 
     public static String calculateTime(Comment comment) {
+
         long curTime = System.currentTimeMillis();
         long regTime = Timestamp.valueOf(comment.getCreatedAt()).getTime();
         long diffTime = Math.abs((curTime - regTime) / 1000);
         String msg = null;
+
         if (diffTime < TIME_MAXIMUM.SEC) {
 // sec
             msg = diffTime + "초 전";

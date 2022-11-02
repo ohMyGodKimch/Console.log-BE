@@ -87,7 +87,6 @@ public class BoardService {
         List<Board> boardList = boardRepository.findAllByOrderByCreatedAtDesc();
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
-
         for (Board board : boardList) {
 
             boardResponseDtoList.add(new BoardResponseDto(board, imageRepository.findTop1ByBoardOrderByCreatedAtAsc(board)));

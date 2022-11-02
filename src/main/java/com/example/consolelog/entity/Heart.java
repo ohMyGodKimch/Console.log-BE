@@ -27,6 +27,7 @@ public class Heart {
     private Board board;
 
     public Heart(Board board, Member member) {
+
         this.board = board;
         this.member = member;
     }

@@ -21,6 +21,7 @@ public class CommentResponseDto {
 
 
     public CommentResponseDto(Comment comment){
+
         this.commentId = comment.getId();
         this.comment = comment.getContent();
         this.nickname = comment.getMember().getNickname();
