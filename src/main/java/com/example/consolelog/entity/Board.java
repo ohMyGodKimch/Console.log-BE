@@ -21,10 +21,10 @@ public class Board extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,6 +44,12 @@ public class Board extends TimeStamped {
     public Board(BoardRequestDto boardRequestDto, Member member) {
         this.title = boardRequestDto.getTitle();
         this.content = boardRequestDto.getContent();
+        this.member = member;
+    }
+
+    public Board(Member member){
+        this.title = null;
+        this.content = null;
         this.member = member;
     }
 

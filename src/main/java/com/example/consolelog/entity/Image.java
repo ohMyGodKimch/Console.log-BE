@@ -1,7 +1,7 @@
 package com.example.consolelog.entity;
 
 
-import lombok.AllArgsConstructor;
+import com.example.consolelog.util.TimeStamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Image {
+public class Image extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

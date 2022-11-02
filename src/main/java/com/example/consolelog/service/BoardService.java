@@ -35,21 +35,51 @@ public class BoardService {
     private final ImageRepository imageRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
-
     private final S3UpaloadService s3UpaloadService;
-//    private final Time time;
 
 
+    // 게시물 작성
+    public ResponseDto<?> writeBoard(Member member) {
 
-    public ResponseDto<?> createBoard(BoardRequestDto boardRequestDto, Member member) {
-        // 로그인한 멤버가 누구인지 확인
+        Board board = boardRepository.save(new Board(member));
 
-        Board board = new Board(boardRequestDto, member);
+        System.out.println(board.getId());
 
-        boardRepository.save(board);
+        return ResponseDto.success(BoardResponseDto.builder()
+                .boardId(board.getId())
+                .build());
+    }
+
+
+    // 게시물 업로드
+    @Transactional
+    public ResponseDto<?> uploadBoard(Long boardId, BoardRequestDto boardRequestDto, Member member) {
+
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("작성중인 게시물이 아닙니다."));
+
+        if (validateMember(member, board))
+            throw new IllegalArgumentException("게시물 작성자와 현재 사용자가 일치하지 않습니다.");
+
+        board.update(boardRequestDto);
 
         return ResponseDto.success("게시물 업로드가 완료되었습니다.");
     }
+
+
+    // 게시글 작성 취소
+    @Transactional
+    public ResponseDto<?> cancelBoard(Long boardId, Member member) {
+
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("작성중인 게시물이 아닙니다."));
+
+        if (validateMember(member, board))
+            throw new IllegalArgumentException("게시물 작성자와 현재 사용자가 일치하지 않습니다.");
+
+        boardRepository.delete(board);
+
+        return ResponseDto.success("게시글 작성 취소");
+    }
+
 
     // 게시물 전체 조회
     public ResponseDto<?> getBoardList() {
@@ -57,8 +87,10 @@ public class BoardService {
         List<Board> boardList = boardRepository.findAllByOrderByCreatedAtDesc();
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
+
         for (Board board : boardList) {
-            boardResponseDtoList.add(new BoardResponseDto(board));
+
+            boardResponseDtoList.add(new BoardResponseDto(board, imageRepository.findTop1ByBoardOrderByCreatedAtAsc(board)));
         }
 
         return ResponseDto.success(boardResponseDtoList);
@@ -82,6 +114,7 @@ public class BoardService {
                     .build()
             );
         }
+
         return ResponseDto.success(BoardResponseDto.builder()
                 .boardId(board.getId())
                 .title(board.getTitle())
@@ -94,6 +127,7 @@ public class BoardService {
                 .build());
 
     }
+
 
     // 게시글 수정
     @Transactional
@@ -109,6 +143,7 @@ public class BoardService {
         return ResponseDto.success("게시물 수정이 완료되었습니다.");
     }
 
+
     // 게시글 삭제
     @Transactional
     public ResponseDto<?> deleteBoard(Long boardId, Member member) {
@@ -123,6 +158,7 @@ public class BoardService {
         return ResponseDto.success("게시물 삭제가 완료되었습니다.");
     }
 
+
     // 게시물 트렌딩정렬 ( 생성날짜 & 하트 개수 기준 정렬하기)
     public ResponseDto<?> getTrendingBoard(String options) {
 
@@ -131,7 +167,7 @@ public class BoardService {
         List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
 
 
-            // 오늘 기준
+        // 오늘 기준
         if (options.equals("today")) {
             //게시물 생성 하루 기준 추출
             trendingBoard = boardRepository.findDistinctByCreatedAtBetween(currentDateTile.minusHours(24), LocalDateTime.now());
@@ -160,13 +196,15 @@ public class BoardService {
             }
         });
 
-        for(Board board : trendingBoard) {
-            boardResponseDtoList.add(new BoardResponseDto(board));
+        for (Board board : trendingBoard) {
+            boardResponseDtoList.add(new BoardResponseDto(board, imageRepository.findTop1ByBoardOrderByCreatedAtAsc(board)));
         }
 
         return ResponseDto.success(boardResponseDtoList);
     }
 
+
+    // 이미지 업로드
     public ResponseDto<?> uploadImage(Long boardId, MultipartFile multipartFile) throws IOException {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다."));
@@ -175,12 +213,8 @@ public class BoardService {
         imageRepository.save(image);
 
         ImageResponseDto imageResponseDto = new ImageResponseDto(image.getImageUrl());
+
         return ResponseDto.success(imageResponseDto);
-    }
-
-
-    public boolean validateMember(Member member, Board board) {
-        return !member.getName().equals(board.getMember().getName());
     }
 
     // 무한 스크롤
@@ -195,7 +229,7 @@ public class BoardService {
         Map<String, List<BoardResponseDto>> listMap = new HashMap<>();
         List<BoardResponseDto> boardList = new ArrayList<>();
 
-        for (Board board : sliceBoardList){
+        for (Board board : sliceBoardList) {
             BoardResponseDto boards = BoardResponseDto.builder()
                     .boardId(board.getId())
                     .title(board.getTitle())
@@ -208,9 +242,13 @@ public class BoardService {
             boardList.add(boards);
         }
 
-        listMap.put("maindata", boardList);
+        listMap.put("boardSlice", boardList);
 
         return listMap;
+    }
+
+    public boolean validateMember(Member member, Board board) {
+        return !member.getName().equals(board.getMember().getName());
     }
 }
 

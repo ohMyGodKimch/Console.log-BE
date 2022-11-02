@@ -1,6 +1,7 @@
 package com.example.consolelog.dto.responseDto;
 
 import com.example.consolelog.entity.Board;
+import com.example.consolelog.entity.Image;
 import com.example.consolelog.entity.Time;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ public class BoardResponseDto {
 
     private Long boardId;
 
-//    private String image;
+    private String thumbnail;
 
     private String title;
 
@@ -23,7 +24,7 @@ public class BoardResponseDto {
 
     private String dayBefore;
 
-//    private String userImage;
+    private String userImage;
 
     private String writer;
 
@@ -34,8 +35,9 @@ public class BoardResponseDto {
     private int heartCount = 0;
 
     // 게시물 목록 보기 & 게시물 등록 & 게시물 수정 사용
-    public BoardResponseDto(Board board){
+    public BoardResponseDto(Board board, Image image){
         this.boardId = board.getId();
+        this.thumbnail = image.getImageUrl();
         this.title = board.getTitle();
         this.content = board.getContent();
         this.dayBefore = Time.calculateTime(board);
