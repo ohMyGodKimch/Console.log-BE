@@ -1,12 +1,12 @@
 package com.example.consolelog.service;
 
+import com.example.consolelog.dto.responseDto.HeartResponseDto;
 import com.example.consolelog.dto.responseDto.ResponseDto;
 import com.example.consolelog.entity.Board;
 import com.example.consolelog.entity.Heart;
 import com.example.consolelog.entity.Member;
 import com.example.consolelog.repository.BoardRepository;
 import com.example.consolelog.repository.HeartRepository;
-import com.example.consolelog.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class HeartService {
         Heart heart = new Heart(board, member);
         heartRepository.save(heart);
 
-        return ResponseDto.success("좋아요를 눌렀습니다");
+        return ResponseDto.success(new HeartResponseDto(board,"좋아요를 눌렀습니다."));
     }
 
 
@@ -43,6 +43,6 @@ public class HeartService {
         Heart heart = heartRepository.findByBoardAndMember(board, member);
         heartRepository.delete(heart);
 
-        return ResponseDto.success("좋아요를 취소했습니다");
+        return ResponseDto.success(new HeartResponseDto(board, "좋아요를 취소하였습니다."));
     }
 }
