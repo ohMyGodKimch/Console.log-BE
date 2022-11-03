@@ -40,7 +40,7 @@ public class HeartService {
         if (!heartRepository.existsByBoardAndMember(board, member))
             throw new IllegalArgumentException("좋아요를 누른적 없는 사용자입니다.");
 
-        Heart heart = heartRepository.findByBoard(board);
+        Heart heart = heartRepository.findByBoardAndMember(board, member);
         heartRepository.delete(heart);
 
         return ResponseDto.success("좋아요를 취소했습니다");
